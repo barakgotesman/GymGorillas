@@ -235,7 +235,7 @@ export function JungleCorner({ position = 'tl', size = 200, color, style = {} }:
 }
 
 // ── Stat Bubble ──────────────────────────────────────────────────
-export function StatBubble({ label, value, color }: { label: string; value: string | number; color?: string }) {
+export function StatBubble({ label, value, color }: { label: string; value: React.ReactNode; color?: string }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
       <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 26, color: color || C.text, lineHeight: 1 }}>{value}</span>

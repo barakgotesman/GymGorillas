@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Gym Gorillas — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for **Gym Gorillas**, a gamified lifting tracker where every set earns XP and your gorilla evolves from Chimp → Silverback → Legendary.
 
-Currently, two official plugins are available:
+This is the **V1 MVP** — 7 screens, all business logic running client-side against a mock store so the app is fully navigable without a backend.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19 + TypeScript
+- Vite 8
+- React Router 7
+- Zustand (persisted to `localStorage`)
+- Tailwind CSS 4 (theme tokens) + inline styles (design system in `src/lib/constants.ts`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Running
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # tsc -b && vite build
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Screens (V1)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Route | Screen |
+|---|---|
+| `/` | Landing / sign-in (Google OAuth stubbed) |
+| `/onboarding` | 4-step profile onboarding |
+| `/dashboard` | Gorilla, XP bar, streak, recent activity |
+| `/workout/active` | Live session — pick exercise, log sets, live XP preview |
+| `/workout/log` | Retroactive session logging (up to 7 days back) |
+| `/history` | Paginated session history, filterable by exercise |
+| `/history/:id` | Session detail — per-exercise set breakdown |
+| `/exercises` | Exercise library with muscle-group filters and PBs |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+V2–V5 screens (Templates, Quests, Achievements, Leaderboard, Friends/Crew, Cosmetics, Shop, Settings) are defined in the spec but not yet implemented.
+
+## Architecture
+
+- `src/lib/store.ts` — Zustand store that acts as the mock API. Implements the XP engine, streak logic, rank-up, and personal-best tracking per the spec. State is persisted to `localStorage` under `gg-state`.
+- `src/lib/xp.ts` — Spec's XP engine: `setXP = (weight × reps) / bodyweight`, multipliers for gender / fitness / age / streak / first-log bonus, and `coins = floor(xp / 10)`.
+- `src/lib/constants.ts` — Design system (colors, fonts, rank thresholds, muscle-group palette).
+- `src/components/ui.tsx` — Reusable UI (`Card`, `XPBar`, `GorillaAvatar`, `RankBadge`, `Pill`, `MuscleTag`, `Toast`, `JungleCorner`, `StatBubble`).
+- `src/components/AppShell.tsx` — Sticky top bar + bottom tab nav for authed routes.
+- `src/screens/` — One file per screen above.
+
+## Auth
+
+Google OAuth is **stubbed** — the Landing page has two buttons that simulate a new vs. returning Google login. No network call is made. Replace `loginStub` in `src/lib/store.ts` with a real `POST /auth/google` call when the backend lands.
+
+## Next steps
+
+- Replace the mock store with a real Axios client hitting the spec'd endpoints at `https://api.gymgorillas.gg/v1`.
+- Add V2 screens (Templates, Quests, Achievements).
+- Add V3 social layer (Leaderboard, Friends, Crew).
+- Hook up real Google OAuth + JWT refresh flow per spec §2.
