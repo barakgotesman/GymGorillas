@@ -34,8 +34,8 @@ export function History() {
   }, [paged]);
 
   return (
-    <div style={{ padding: '16px 18px 24px' }}>
-      <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 28, letterSpacing: 1, marginBottom: 10 }}>
+    <div className="max-w-[760px] mx-auto pb-6">
+      <div className="font-bebas text-[28px] tracking-[1px] mb-2.5">
         History
       </div>
 

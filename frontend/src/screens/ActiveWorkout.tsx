@@ -77,7 +77,7 @@ export function ActiveWorkout() {
   if (!session) return null;
 
   return (
-    <div style={{ padding: '16px 18px 24px' }}>
+    <div className="max-w-[680px] mx-auto">
       <Toast msg={toast} visible={!!toast} />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
@@ -174,17 +174,27 @@ export function ActiveWorkout() {
       )}
 
       {session.sets.length > 0 && (
-        <button onClick={finish} style={{
-          position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-          width: 'calc(100% - 44px)', maxWidth: 436,
-          padding: 16, background: C.accent, color: '#05160A',
-          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 800, cursor: 'pointer',
-          boxShadow: `0 10px 30px ${C.accent}55`, display: 'flex',
-          alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 15,
-        }}>
-          <CheckIcon size={20} color="#05160A" />
-          Finish — Bank +{Math.round(session.totalXp)} XP
-        </button>
+        <>
+          {/* Mobile: fixed bottom CTA above the tab bar */}
+          <button
+            onClick={finish}
+            className="md:hidden fixed bottom-[96px] left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[436px] py-4 bg-accent text-[#05160A] border-0 rounded-2xl text-base font-extrabold cursor-pointer flex items-center justify-center gap-2 z-[15]"
+            style={{ boxShadow: `0 10px 30px ${C.accent}55` }}
+          >
+            <CheckIcon size={20} color="#05160A" />
+            Finish — Bank +{Math.round(session.totalXp)} XP
+          </button>
+
+          {/* Desktop: inline CTA */}
+          <button
+            onClick={finish}
+            className="hidden md:flex w-full mt-5 py-4 bg-accent text-[#05160A] border-0 rounded-2xl text-base font-extrabold cursor-pointer items-center justify-center gap-2"
+            style={{ boxShadow: `0 10px 30px ${C.accent}55` }}
+          >
+            <CheckIcon size={20} color="#05160A" />
+            Finish — Bank +{Math.round(session.totalXp)} XP
+          </button>
+        </>
       )}
 
       {picker && (

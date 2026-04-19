@@ -11,98 +11,136 @@ export function Dashboard() {
 
   if (!user) return null;
 
-  const recent = summaries.slice(0, 3);
+  const recent = summaries.slice(0, 6);
   const weekXp = summaries.slice(0, 5).reduce((acc, s) => acc + s.totalXp, 0);
   const weekVolume = summaries.slice(0, 5).reduce((acc, s) => acc + s.totalVolumeKg, 0);
 
-  return (
-    <div style={{ padding: '18px 18px 8px' }}>
-      {!user.profileComplete && (
-        <Link to="/onboarding" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 14px', background: C.accentDim, border: `1px solid ${C.accentMid}`,
-            borderRadius: 12, color: C.accent, fontSize: 13, fontWeight: 600, marginBottom: 14,
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          }}>
-            <span>Finish your profile for accurate XP</span>
-            <ChevronRightIcon color={C.accent} />
-          </div>
-        </Link>
-      )}
+  const actions = (
+    <div className="grid grid-cols-2 gap-2.5">
+      <button
+        onClick={() => nav('/workout/active')}
+        className="flex items-center justify-center gap-2 py-3.5 bg-accent text-[#05160A] border-0 rounded-2xl text-[15px] font-extrabold cursor-pointer shadow-[0_6px_20px_rgba(46,232,122,0.27)]"
+      >
+        <PlusIcon size={18} color="#05160A" />
+        <span>Start Workout</span>
+      </button>
+      <button
+        onClick={() => nav('/workout/log')}
+        className="py-3.5 bg-transparent text-gg-text border border-border rounded-2xl text-sm font-semibold cursor-pointer hover:bg-card"
+      >
+        Log past workout
+      </button>
+    </div>
+  );
 
-      <Card style={{ padding: 18, display: 'flex', gap: 16, alignItems: 'center' }}>
-        <GorillaAvatar rank={user.currentRank} size={90} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 1 }}>
-            {user.displayName || 'Nameless Ape'}
-          </div>
-          <div style={{ margin: '4px 0 10px' }}>
-            <RankBadge rank={user.currentRank} />
-          </div>
-          <XPBar totalXp={user.totalXp} rank={user.currentRank} />
-        </div>
+  const stats = (
+    <div className="grid grid-cols-3 gap-2.5">
+      <Card style={{ padding: 14 }}>
+        <StatBubble
+          label="Streak"
+          color={C.orange}
+          value={
+            <span className="inline-flex items-center gap-1">
+              <FlameIcon size={16} /> {user.currentStreak}
+            </span>
+          }
+        />
       </Card>
+      <Card style={{ padding: 14 }}>
+        <StatBubble label="XP (5 days)" value={Math.round(weekXp).toLocaleString()} color={C.accent} />
+      </Card>
+      <Card style={{ padding: 14 }}>
+        <StatBubble label="Volume kg" value={Math.round(weekVolume).toLocaleString()} color={C.silver} />
+      </Card>
+    </div>
+  );
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, margin: '14px 0' }}>
-        <Card style={{ padding: 14 }}>
-          <StatBubble
-            label="Streak"
-            color={C.orange}
-            value={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <FlameIcon size={16} /> {user.currentStreak}
-              </span>
-            }
-          />
-        </Card>
-        <Card style={{ padding: 14 }}>
-          <StatBubble label="XP (5 days)" value={Math.round(weekXp).toLocaleString()} color={C.accent} />
-        </Card>
-        <Card style={{ padding: 14 }}>
-          <StatBubble label="Volume kg" value={Math.round(weekVolume).toLocaleString()} color={C.silver} />
-        </Card>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
-        <button onClick={() => nav('/workout/active')} style={bigBtn(C.accent)}>
-          <PlusIcon size={18} color="#05160A" />
-          <span>Start Workout</span>
-        </button>
-        <button onClick={() => nav('/workout/log')} style={bigBtnOutline}>
-          Log past workout
-        </button>
-      </div>
-
+  const recentList = (
+    <>
       <SectionHeader title="Recent Activity" action="See all" onAction={() => nav('/history')} />
       {recent.length === 0 && (
         <Card style={{ padding: 20, textAlign: 'center', color: C.textDim, fontSize: 13 }}>
           No workouts yet — tap Start Workout above.
         </Card>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {recent.map(s => (
-          <Card key={s.id} onClick={() => nav(`/history/${s.id}`)} style={{ padding: '12px 14px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700 }}>
-                  {formatDate(s.workoutDate)}
-                  {s.isRetroactive && <span style={{ marginLeft: 6, color: C.purple, fontSize: 10 }}>retroactive</span>}
-                </div>
-                <div style={{ fontSize: 12, color: C.textDim, marginTop: 2 }}>
-                  {s.exerciseCount} exercises · {s.setCount} sets · {s.totalVolumeKg.toLocaleString()} kg
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: "'Bebas Neue', cursive", color: C.accent, fontSize: 22, lineHeight: 1 }}>
-                  +{Math.round(s.totalXp)}
-                </div>
-                <div style={{ fontSize: 10, color: C.textMuted, letterSpacing: 0.5, textTransform: 'uppercase' }}>XP</div>
-              </div>
-            </div>
-          </Card>
+      <div className="flex flex-col gap-2">
+        {recent.slice(0, 3).map(s => (
+          <SessionRow key={s.id} s={s} onClick={() => nav(`/history/${s.id}`)} />
         ))}
+        <div className="hidden md:flex md:flex-col gap-2">
+          {recent.slice(3).map(s => (
+            <SessionRow key={s.id} s={s} onClick={() => nav(`/history/${s.id}`)} />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  const profileCard = (
+    <Card className="p-4 md:p-5 flex gap-4 items-center">
+      <div className="hidden md:block"><GorillaAvatar rank={user.currentRank} size={120} /></div>
+      <div className="md:hidden"><GorillaAvatar rank={user.currentRank} size={90} /></div>
+      <div className="flex-1 min-w-0">
+        <div className="font-bebas tracking-[1px] text-[22px] md:text-[28px]">
+          {user.displayName || 'Nameless Ape'}
+        </div>
+        <div className="my-1 mb-2.5">
+          <span className="md:hidden"><RankBadge rank={user.currentRank} size="sm" /></span>
+          <span className="hidden md:inline"><RankBadge rank={user.currentRank} size="md" /></span>
+        </div>
+        <XPBar totalXp={user.totalXp} rank={user.currentRank} />
+      </div>
+    </Card>
+  );
+
+  const nudge = !user.profileComplete && (
+    <Link to="/onboarding" className="no-underline">
+      <div className="px-3.5 py-2.5 bg-accent-dim border border-accent-mid rounded-xl text-accent text-[13px] font-semibold flex justify-between items-center">
+        <span>Finish your profile for accurate XP</span>
+        <ChevronRightIcon color={C.accent} />
+      </div>
+    </Link>
+  );
+
+  return (
+    <div className="flex flex-col gap-3.5 md:gap-5 py-4 md:py-0">
+      {nudge}
+      {/* On mobile: single column stack. On desktop: 2-col grid — profile/stats/actions on left, recent on right */}
+      <div className="md:grid md:grid-cols-[1.3fr_1fr] md:gap-5">
+        <div className="flex flex-col gap-3.5 md:gap-3.5">
+          {profileCard}
+          {stats}
+          {actions}
+        </div>
+        <div className="mt-4 md:mt-0">
+          {recentList}
+        </div>
       </div>
     </div>
+  );
+}
+
+function SessionRow({ s, onClick }: { s: { id: string; workoutDate: string; totalXp: number; totalVolumeKg: number; exerciseCount: number; setCount: number; isRetroactive: boolean }; onClick: () => void }) {
+  return (
+    <Card onClick={onClick} style={{ padding: '12px 14px' }}>
+      <div className="flex justify-between items-center">
+        <div>
+          <div className="text-sm font-bold">
+            {formatDate(s.workoutDate)}
+            {s.isRetroactive && <span className="ml-1.5 text-purple text-[10px]">retroactive</span>}
+          </div>
+          <div className="text-xs text-text-dim mt-0.5">
+            {s.exerciseCount} exercises · {s.setCount} sets · {s.totalVolumeKg.toLocaleString()} kg
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="font-bebas text-accent text-[22px] leading-none">
+            +{Math.round(s.totalXp)}
+          </div>
+          <div className="text-[10px] text-text-muted tracking-[0.5px] uppercase">XP</div>
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -116,18 +154,3 @@ function formatDate(iso: string) {
   if (diff < 7) return `${diff} days ago`;
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
-
-function bigBtn(color: string): React.CSSProperties {
-  return {
-    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-    padding: '14px', background: color, color: '#05160A', border: 'none',
-    borderRadius: 14, fontSize: 15, fontWeight: 800, cursor: 'pointer',
-    boxShadow: `0 6px 20px ${color}44`,
-  };
-}
-
-const bigBtnOutline: React.CSSProperties = {
-  padding: '14px', background: 'transparent', color: C.text,
-  border: `1px solid ${C.border}`, borderRadius: 14,
-  fontSize: 14, fontWeight: 600, cursor: 'pointer',
-};

@@ -33,8 +33,8 @@ export function SessionDetail() {
   }
 
   return (
-    <div style={{ padding: '16px 18px 24px' }}>
-      <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 26, letterSpacing: 1 }}>
+    <div className="max-w-[680px] mx-auto pb-6">
+      <div className="font-bebas text-[26px] tracking-[1px]">
         {new Date(session.workoutDate + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
       </div>
       <div style={{ fontSize: 12, color: C.textDim, marginBottom: 14 }}>

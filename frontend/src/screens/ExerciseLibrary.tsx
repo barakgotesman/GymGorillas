@@ -26,9 +26,9 @@ export function ExerciseLibrary() {
   }, [exercises, q, filter, showArchived]);
 
   return (
-    <div style={{ padding: '16px 18px 24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 28, letterSpacing: 1 }}>Library</div>
+    <div className="max-w-[760px] mx-auto pb-6">
+      <div className="flex justify-between items-center mb-3">
+        <div className="font-bebas text-[28px] tracking-[1px]">Library</div>
         <button onClick={() => setCreating(true)} style={addBtn}>
           <PlusIcon size={16} color="#05160A" /> New
         </button>
@@ -65,7 +65,7 @@ export function ExerciseLibrary() {
           No exercises. Tap + New to create one.
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {filtered.map(e => (
             <Card key={e.id} onClick={() => setEditing(e)} style={{ padding: 14 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

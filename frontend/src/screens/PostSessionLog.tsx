@@ -70,9 +70,9 @@ export function PostSessionLog() {
   }, {});
 
   return (
-    <div style={{ padding: '16px 18px 120px' }}>
-      <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 28, letterSpacing: 1 }}>Log past workout</div>
-      <div style={{ color: C.textDim, fontSize: 12, marginBottom: 16 }}>
+    <div className="max-w-[680px] mx-auto pb-28 md:pb-6">
+      <div className="font-bebas text-[28px] tracking-[1px]">Log past workout</div>
+      <div className="text-text-dim text-xs mb-4">
         Within the last 7 days. XP credits the same as a live session.
       </div>
 
@@ -134,15 +134,22 @@ export function PostSessionLog() {
       {error && <div style={{ color: C.danger, fontSize: 13, marginTop: 12, textAlign: 'center' }}>{error}</div>}
 
       {drafts.length > 0 && (
-        <button onClick={submit} style={{
-          position: 'fixed', bottom: 96, left: '50%', transform: 'translateX(-50%)',
-          width: 'calc(100% - 44px)', maxWidth: 436,
-          padding: 16, background: C.accent, color: '#05160A',
-          border: 'none', borderRadius: 16, fontSize: 16, fontWeight: 800, cursor: 'pointer',
-          boxShadow: `0 10px 30px ${C.accent}55`, zIndex: 15,
-        }}>
-          Save session
-        </button>
+        <>
+          <button
+            onClick={submit}
+            className="md:hidden fixed bottom-[96px] left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[436px] py-4 bg-accent text-[#05160A] border-0 rounded-2xl text-base font-extrabold cursor-pointer z-[15]"
+            style={{ boxShadow: `0 10px 30px ${C.accent}55` }}
+          >
+            Save session
+          </button>
+          <button
+            onClick={submit}
+            className="hidden md:block w-full mt-5 py-4 bg-accent text-[#05160A] border-0 rounded-2xl text-base font-extrabold cursor-pointer"
+            style={{ boxShadow: `0 10px 30px ${C.accent}55` }}
+          >
+            Save session
+          </button>
+        </>
       )}
 
       {picker && <InlinePicker onClose={() => setPicker(false)} onPick={addExercise} />}

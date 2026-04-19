@@ -50,13 +50,8 @@ export function Onboarding() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh', maxWidth: 480, margin: '0 auto',
-      background: C.bg, color: C.text,
-      display: 'flex', flexDirection: 'column',
-      padding: '20px 22px 32px',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+    <div className="min-h-screen max-w-[520px] mx-auto bg-bg text-gg-text flex flex-col px-5 md:px-8 pt-5 pb-8">
+      <div className="flex justify-center mt-2">
         <Logo size="md" />
       </div>
 
